@@ -1,2 +1,3 @@
 # Amazon_parser
-Amazon Products Deatails
+Amazon Products Page Parser Deatails inculding bullets, and Product Information
+
