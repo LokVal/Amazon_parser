@@ -1,0 +1,46 @@
+#Import the required libraries bs4, request
+# import lxml
+import requests
+from bs4 import BeautifulSoup, ResultSet
+import pandas as pd
+
+
+# Provide the url or ASIN for web scraping
+# URL should be https
+# URL should be in such a format url = 'https://www.amazon.com/dp/B07Z64HQ1L'
+
+ASIN = 'B07Z64HQ1L'
+url = 'https://www.amazon.com/dp/'+ASIN
+
+# To avoid CAPCHA header is required. MAke your header  (google how to make it)
+
+headers = {"User-Agent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.1.3987.132 Safari/537.36'}
+
+#Access the url with the request object and downloading the page from AMAZON
+r = requests.get(url, headers=headers)
+soup_outcome = BeautifulSoup (r.content, features="lxml")
+
+# To sse how to page looks like 
+# print (r.prettify())
+
+# Getting poduct_title. Amazon could potentially could change the name
+poduct_title= soup_outcome.select("#productTitle")[0].get_text().strip()
+print (poduct_title)
+
+poduct_price= soup_outcome.select("#priceblock_saleprice")[0].get_text().strip()
+print (poduct_price)
+
+poduct_reviews_number= soup_outcome.select("#acrCustomerReviewText")[0].get_text().strip()
+print (poduct_reviews_number)
+
+#alistitemtaglist = soup_outcome.findAll("span",{"class":"a-list-item"})
+
+text_bullets = soup_outcome.findAll(id="feature-bullets")
+
+#cleaning text for bullets
+def clear_text_noise(text: str) -> str:
+    return text.replace('\n', '').replace('\t', '')
+
+text_bullets = [clear_text_noise(b.text) for b in soup_outcome.select('#feature-bullets > ul > li > span')]
+
+print(text_bullets)
